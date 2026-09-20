@@ -33,3 +33,5 @@ Las tarjetas del catálogo ahora aceptan `coverImage` por libro. Tres registros 
 El portal guarda hasta cinco búsquedas recientes en `localStorage` (`biblioteca-umoa-recent-searches`). Al confirmar una búsqueda con Enter, el catálogo calcula coincidencias por título, autor y materia, y muestra hasta tres libros recomendados dentro de la vista de catálogo. Las recomendaciones son locales, transparentes y accionables: seleccionar una tarjeta reutiliza su título como nueva búsqueda.
 
 El encabezado utiliza ahora `client/public/logoumoa.png`, la misma imagen institucional empleada por el sitio web de la Universidad de Moa.
+
+El logo institucional también está configurado en el encabezado HTML del sitio mediante `favicon` y `apple-touch-icon`, además de mostrarse directamente en la barra superior del portal.
