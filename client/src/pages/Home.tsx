@@ -6,9 +6,9 @@ import {
 } from "lucide-react";
 
 const images = {
-  news: "/manus-storage/noticias_8f4c78e8.webp",
-  campus: "/manus-storage/universidad_1418a2df.webp",
-  halls: "/manus-storage/home_33bc4002.webp",
+  news: "/images/library-news.webp",
+  campus: "/images/library-campus.webp",
+  halls: "/images/library-home.webp",
 };
 
 type Book = { id: string; title: string; author: string; subject: string; year: number; type: string; isbn: string; cover: string };

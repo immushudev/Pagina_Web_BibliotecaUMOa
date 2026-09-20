@@ -19,3 +19,7 @@ El catálogo conserva búsqueda por texto, filtros por autor, año y materia, es
 ## Validación
 
 La corrección se verificó con `pnpm check`, `pnpm build` y revisión visual del portal en navegador. El resultado esperado es una interfaz de aplicación con panel de navegación y vistas internas, no una página de presentación lineal.
+
+## Fondos institucionales
+
+Se incorporaron copias locales de las imágenes visuales utilizadas por UMOA en `client/public/images/`: `library-home.webp` para el fondo global, `library-campus.webp` para el área principal, `library-faculties.webp` para la navegación lateral, `library-news.webp` para recursos y noticias, `library-collections.webp` para filtros y `library-texture.webp` para la cabecera y tarjetas. Cada fondo utiliza capas de degradado oscuro para conservar la legibilidad del portal y no altera la navegación ni la funcionalidad del dashboard.

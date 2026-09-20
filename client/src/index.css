@@ -145,3 +145,66 @@ body { background: #050101; color: #f8f4ee; font-family: 'Inter', sans-serif; }
   .app-sidebar { background: #0b0202; }
   .app-main { background: #050101; }
 }
+
+/* Fondos fotográficos institucionales, siguiendo el tratamiento visual del sitio UMOA. */
+.library-app {
+  position: relative;
+  isolation: isolate;
+  background-color: #050101;
+  background-image: linear-gradient(rgba(5,1,1,.91), rgba(5,1,1,.96)), url('/images/library-home.webp');
+  background-position: center top;
+  background-size: cover;
+  background-attachment: fixed;
+}
+.library-app::before {
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  content: '';
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(5,1,1,.42), rgba(5,1,1,.78)), url('/images/library-texture.webp') center / cover;
+  opacity: .25;
+  mix-blend-mode: screen;
+}
+.app-header {
+  background-image: linear-gradient(rgba(8,2,2,.88), rgba(8,2,2,.94)), url('/images/library-texture.webp');
+  background-position: center;
+  background-size: cover;
+}
+.app-sidebar {
+  background-image: linear-gradient(rgba(11,2,2,.9), rgba(11,2,2,.96)), url('/images/library-faculties.webp');
+  background-position: center;
+  background-size: cover;
+  background-attachment: fixed;
+}
+.app-main {
+  background-image: linear-gradient(rgba(5,1,1,.86), rgba(5,1,1,.94)), url('/images/library-campus.webp');
+  background-position: center;
+  background-size: cover;
+  background-attachment: fixed;
+}
+.advanced-filters {
+  background-image: linear-gradient(rgba(13,3,3,.91), rgba(13,3,3,.96)), url('/images/library-collections.webp');
+  background-position: center;
+  background-size: cover;
+}
+.catalog-card {
+  background-image: linear-gradient(rgba(16,4,4,.91), rgba(16,4,4,.96)), url('/images/library-texture.webp');
+  background-position: center;
+  background-size: cover;
+}
+.resource-large, .news-list-card, .service-hero {
+  background-image: linear-gradient(rgba(16,4,4,.78), rgba(16,4,4,.9)), url('/images/library-news.webp');
+  background-position: center;
+  background-size: cover;
+}
+.news-list-image {
+  position: relative;
+  overflow: hidden;
+}
+.news-list-image::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  background: linear-gradient(135deg, rgba(192,57,43,.2), rgba(5,1,1,.08));
+}
