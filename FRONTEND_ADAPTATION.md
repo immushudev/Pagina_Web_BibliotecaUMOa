@@ -23,3 +23,7 @@ La corrección se verificó con `pnpm check`, `pnpm build` y revisión visual de
 ## Fondos institucionales
 
 Se incorporaron copias locales de las imágenes visuales utilizadas por UMOA en `client/public/images/`: `library-home.webp` para el fondo global, `library-campus.webp` para el área principal, `library-faculties.webp` para la navegación lateral, `library-news.webp` para recursos y noticias, `library-collections.webp` para filtros y `library-texture.webp` para la cabecera y tarjetas. Cada fondo utiliza capas de degradado oscuro para conservar la legibilidad del portal y no altera la navegación ni la funcionalidad del dashboard.
+
+## Portadas del catálogo
+
+Las tarjetas del catálogo ahora aceptan `coverImage` por libro. Tres registros cuentan con portadas locales en `client/public/images/books/`, mientras que los demás muestran una portada fallback basada en el icono genérico de libro y el texto “Portada no disponible”. Si una imagen configurada no carga, `BookCover` cambia automáticamente al fallback mediante `onError`, sin romper la tarjeta ni la búsqueda.

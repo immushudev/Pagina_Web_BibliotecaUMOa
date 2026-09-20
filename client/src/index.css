@@ -208,3 +208,50 @@ body { background: #050101; color: #f8f4ee; font-family: 'Inter', sans-serif; }
   content: '';
   background: linear-gradient(135deg, rgba(192,57,43,.2), rgba(5,1,1,.08));
 }
+
+/* Portadas del catálogo: imagen real cuando existe y fallback editorial cuando no. */
+.catalog-cover {
+  position: relative;
+  overflow: hidden;
+}
+.catalog-cover.has-image {
+  padding: 0;
+  color: #fff;
+  isolation: isolate;
+}
+.catalog-cover.has-image::after {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  content: '';
+  background: linear-gradient(180deg, rgba(5,1,1,.12), rgba(5,1,1,.7));
+}
+.catalog-cover.has-image img {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.catalog-cover.has-image > *:not(img) {
+  position: relative;
+  z-index: 1;
+  margin-right: 15px;
+  margin-left: 15px;
+}
+.catalog-cover.has-image .cover-type { margin-top: 15px; }
+.catalog-cover.has-image small { margin-bottom: 15px; }
+.catalog-cover .cover-status { align-self: flex-start; opacity: .78; }
+.catalog-cover.is-fallback { background-image: linear-gradient(145deg, rgba(255,255,255,.12), transparent 48%); }
+.catalog-cover.is-fallback::before {
+  position: absolute;
+  top: 15px;
+  right: 13px;
+  width: 24px;
+  height: 34px;
+  border: 1px solid currentColor;
+  content: '';
+  opacity: .14;
+}
