@@ -35,3 +35,7 @@ El portal guarda hasta cinco búsquedas recientes en `localStorage` (`biblioteca
 El encabezado utiliza ahora `client/public/logoumoa.png`, la misma imagen institucional empleada por el sitio web de la Universidad de Moa.
 
 El logo institucional también está configurado en el encabezado HTML del sitio mediante `favicon` y `apple-touch-icon`, además de mostrarse directamente en la barra superior del portal.
+
+## Revisión visual integral
+
+Se revisaron catálogo, recomendaciones, recursos, noticias, formación, preguntas, visita, notificaciones y estados de confirmación. Los formularios y controles que todavía utilizaban superficies claras fueron alineados con el sistema UMOA: fondo oscuro, bordes finos, acento rojo mineral, tipografía Inter para lectura, Space Grotesk para títulos y Oswald para etiquetas técnicas. También se añadieron estados hover/focus visibles y `focus-visible` consistente para teclado.

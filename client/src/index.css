@@ -351,3 +351,116 @@ body { background: #050101; color: #f8f4ee; font-family: 'Inter', sans-serif; }
   .recommendation-list { grid-template-columns: 1fr; }
   .recommendations-heading { align-items: flex-start; flex-direction: column; }
 }
+
+/* Revisión integral: tipografía y formularios alineados con el sistema visual oficial UMOA. */
+:root {
+  --font-body: 'Inter', sans-serif;
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-label: 'Oswald', sans-serif;
+}
+body, button, input, select, textarea { font-family: var(--font-body); }
+h1, h2, h3, h4, .page-topbar h1, .catalog-info h2, .news-list-card h2, .subsection-title, .resource-large h2, .service-hero h2, .feedback-page h2, .form-card-heading strong, .service-aside strong, .detail-block strong { font-family: var(--font-display); }
+.eyebrow, .sidebar-label, .breadcrumbs, .service-kicker, .detail-label, .form-card-heading span, .notification-time, .cover-type, .resource-type { font-family: var(--font-label); }
+
+/* Formularios del portal: superficies oscuras, borde fino y acento rojo institucional. */
+.ask-form-card, .ask-form-card form, .answer-panel, .service-card, .service-aside, .visit-details, .notification-list, .notification-toolbar, .feedback-page {
+  color: #f8f4ee;
+}
+.ask-form-card {
+  padding: 30px;
+  background: rgba(16,4,4,.94);
+  border: 1px solid rgba(255,255,255,.14);
+  box-shadow: 0 18px 44px rgba(0,0,0,.22);
+}
+.form-card-heading { border-bottom: 1px solid rgba(255,255,255,.12); padding-bottom: 18px; }
+.form-card-heading span, .service-kicker { color: #d44040; font-family: var(--font-label); letter-spacing: .16em; }
+.form-card-heading strong { color: #fff; font-size: 28px; font-weight: 500; letter-spacing: -.035em; }
+.ask-form-card label {
+  color: rgba(255,255,255,.62);
+  font-family: var(--font-label);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.ask-form-card input, .ask-form-card select, .ask-form-card textarea {
+  min-height: 42px;
+  width: 100%;
+  padding: 12px 13px;
+  border: 1px solid rgba(255,255,255,.17);
+  border-radius: 0;
+  outline: 0;
+  background: rgba(255,255,255,.06);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 12px;
+  line-height: 1.4;
+  resize: vertical;
+  transition: border-color .2s, background .2s, box-shadow .2s;
+}
+.ask-form-card textarea { min-height: 112px; }
+.ask-form-card input::placeholder, .ask-form-card textarea::placeholder { color: rgba(255,255,255,.38); }
+.ask-form-card select option { background: #100404; color: #fff; }
+.ask-form-card input:hover, .ask-form-card select:hover, .ask-form-card textarea:hover { border-color: rgba(212,64,64,.6); }
+.ask-form-card input:focus, .ask-form-card select:focus, .ask-form-card textarea:focus {
+  border-color: #d44040;
+  background: rgba(212,64,64,.08);
+  box-shadow: 0 0 0 2px rgba(212,64,64,.14);
+}
+.ask-form-card .button, .button-dark { background: #c0392b; color: #fff; border: 1px solid #d44040; }
+.ask-form-card .button:hover, .button-dark:hover { background: #d44040; }
+.answer-panel {
+  padding: 30px;
+  background-image: linear-gradient(rgba(20,4,4,.82), rgba(20,4,4,.94)), url('/images/library-collections.webp');
+  background-position: center;
+  background-size: cover;
+  border: 1px solid rgba(255,255,255,.14);
+}
+.answer-panel h3 { color: #fff; font-family: var(--font-display); font-size: 28px; font-weight: 500; letter-spacing: -.04em; }
+.answer-row { border-color: rgba(255,255,255,.14); }
+.answer-row > span, .answer-row strong { color: #fff; }
+.answer-row p { color: rgba(255,255,255,.54); }
+.service-content-grid { color: #fff; }
+.service-card { background: rgba(16,4,4,.9); border: 1px solid rgba(255,255,255,.13); }
+.service-card h4 { color: #fff; font-family: var(--font-display); font-weight: 500; }
+.service-card p, .service-muted { color: rgba(255,255,255,.56); }
+.service-link { color: #d44040; }
+.service-aside { background: #160707; border-left: 2px solid #c0392b; }
+.service-aside svg { color: #d44040; }
+.service-aside strong { color: #fff; }
+.service-aside p, .service-aside span { color: rgba(255,255,255,.58); }
+.visit-details { padding: 25px; background: rgba(16,4,4,.8); border: 1px solid rgba(255,255,255,.13); }
+.detail-block { border-color: rgba(255,255,255,.14); }
+.detail-block > svg, .detail-label { color: #d44040; }
+.detail-block strong { color: #fff; }
+.detail-block p { color: rgba(255,255,255,.56); }
+.notification-toolbar, .notification-list { background: rgba(16,4,4,.9); border: 1px solid rgba(255,255,255,.13); }
+.notification-item { border-color: rgba(255,255,255,.12); }
+.notification-item strong { color: #fff; font-family: var(--font-display); font-weight: 500; }
+.notification-item p { color: rgba(255,255,255,.56); }
+.terracotta-icon, .blue-icon, .green-icon { background: rgba(212,64,64,.16); color: #d44040; border-radius: 0; }
+.feedback-page { background: rgba(16,4,4,.94); border: 1px solid rgba(255,255,255,.14); }
+.feedback-symbol { border-color: #d44040; color: #d44040; }
+.error-symbol { border-color: #e6a06d; color: #e6a06d; }
+.feedback-page h2 { color: #fff; font-family: var(--font-display); font-weight: 500; }
+.feedback-page h2 i { color: #d44040; }
+.feedback-page > p { color: rgba(255,255,255,.58); }
+.feedback-reference { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); }
+.feedback-reference span { color: rgba(255,255,255,.46); }
+.feedback-reference strong { color: #fff; }
+
+/* Estados de teclado y accesibilidad consistentes en todo el portal. */
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible { outline: 2px solid #d44040; outline-offset: 3px; }
+@media (max-width: 680px) {
+  .ask-form-card, .answer-panel, .visit-details { padding: 22px; }
+  .form-card-heading strong, .answer-panel h3 { font-size: 24px; }
+}
+
+.service-content-grid h3, .ask-layout h3 {
+  margin: 0 0 8px;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 500;
+  letter-spacing: -.04em;
+}
