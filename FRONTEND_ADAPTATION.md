@@ -27,3 +27,9 @@ Se incorporaron copias locales de las imágenes visuales utilizadas por UMOA en 
 ## Portadas del catálogo
 
 Las tarjetas del catálogo ahora aceptan `coverImage` por libro. Tres registros cuentan con portadas locales en `client/public/images/books/`, mientras que los demás muestran una portada fallback basada en el icono genérico de libro y el texto “Portada no disponible”. Si una imagen configurada no carga, `BookCover` cambia automáticamente al fallback mediante `onError`, sin romper la tarjeta ni la búsqueda.
+
+## Recomendaciones y logo
+
+El portal guarda hasta cinco búsquedas recientes en `localStorage` (`biblioteca-umoa-recent-searches`). Al confirmar una búsqueda con Enter, el catálogo calcula coincidencias por título, autor y materia, y muestra hasta tres libros recomendados dentro de la vista de catálogo. Las recomendaciones son locales, transparentes y accionables: seleccionar una tarjeta reutiliza su título como nueva búsqueda.
+
+El encabezado utiliza ahora `client/public/logoumoa.png`, la misma imagen institucional empleada por el sitio web de la Universidad de Moa.

@@ -255,3 +255,99 @@ body { background: #050101; color: #f8f4ee; font-family: 'Inter', sans-serif; }
   content: '';
   opacity: .14;
 }
+
+/* Identidad institucional y recomendaciones personalizadas del catálogo. */
+.app-logo {
+  width: 35px;
+  height: 36px;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+.recommendations-panel {
+  margin: 0 0 23px;
+  padding: 17px 19px 19px;
+  background-image: linear-gradient(rgba(20,4,4,.88), rgba(20,4,4,.94)), url('/images/library-news.webp');
+  background-position: center;
+  background-size: cover;
+  border: 1px solid rgba(212,64,64,.32);
+}
+.recommendations-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.recommendations-heading > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+  font-size: 12px;
+}
+.recommendations-heading svg { color: #d44040; }
+.recommendations-heading > span {
+  color: rgba(255,255,255,.48);
+  font-size: 10px;
+}
+.recommendation-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.recommendation-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 8px;
+  background: rgba(255,255,255,.06);
+  color: #fff;
+  text-align: left;
+  border: 1px solid rgba(255,255,255,.1);
+  transition: border-color .2s, background .2s;
+}
+.recommendation-item:hover {
+  background: rgba(212,64,64,.15);
+  border-color: rgba(212,64,64,.65);
+}
+.recommendation-item .catalog-cover {
+  width: 42px;
+  height: 58px;
+  flex: 0 0 42px;
+  padding: 5px;
+}
+.recommendation-item .catalog-cover .cover-type,
+.recommendation-item .catalog-cover small,
+.recommendation-item .catalog-cover svg { display: none; }
+.recommendation-item > span:not(.catalog-cover) {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 4px;
+}
+.recommendation-item strong {
+  overflow: hidden;
+  color: #fff;
+  font-size: 11px;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.recommendation-item small {
+  overflow: hidden;
+  color: rgba(255,255,255,.5);
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.recommendation-item > svg {
+  flex: 0 0 auto;
+  color: #d44040;
+  transform: rotate(-90deg);
+}
+@media (max-width: 800px) {
+  .recommendation-list { grid-template-columns: 1fr; }
+  .recommendations-heading { align-items: flex-start; flex-direction: column; }
+}

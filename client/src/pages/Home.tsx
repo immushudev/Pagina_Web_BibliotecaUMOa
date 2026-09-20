@@ -39,6 +39,10 @@ function loadFavorites() {
   try { return JSON.parse(localStorage.getItem("biblioteca-umoa-favorites") || "[]") as string[]; } catch { return []; }
 }
 
+function loadRecentSearches() {
+  try { return JSON.parse(localStorage.getItem("biblioteca-umoa-recent-searches") || "[]") as string[]; } catch { return []; }
+}
+
 function BookCover({ book }: { book: Book }) {
   const [imageFailed, setImageFailed] = useState(false);
   const hasImage = Boolean(book.coverImage) && !imageFailed;
@@ -56,6 +60,7 @@ function BookCover({ book }: { book: Book }) {
 export default function Home() {
   const [view, setView] = useState<"catalogo" | "recursos" | "noticias" | "favoritos" | "formacion" | "preguntas" | "visitanos" | "notificaciones" | "confirmacion" | "error">("catalogo");
   const [query, setQuery] = useState("");
+  const [recentSearches, setRecentSearches] = useState<string[]>(loadRecentSearches);
   const [author, setAuthor] = useState("Todos los autores");
   const [year, setYear] = useState("Todos los años");
   const [subject, setSubject] = useState("Todas las materias");
@@ -69,6 +74,7 @@ export default function Home() {
   const [unread, setUnread] = useState(3);
 
   useEffect(() => { localStorage.setItem("biblioteca-umoa-favorites", JSON.stringify(favorites)); }, [favorites]);
+  useEffect(() => { localStorage.setItem("biblioteca-umoa-recent-searches", JSON.stringify(recentSearches)); }, [recentSearches]);
   useEffect(() => {
     setIsLoading(true);
     const timer = window.setTimeout(() => setIsLoading(false), 520);
@@ -82,6 +88,11 @@ export default function Home() {
   const toggleFavorite = (id: string) => setFavorites((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
   const isFavorite = (id: string) => favorites.includes(id);
   const clearFilters = () => { setQuery(""); setAuthor("Todos los autores"); setYear("Todos los años"); setSubject("Todas las materias"); };
+  const rememberSearch = () => {
+    const normalized = query.trim().replace(/\s+/g, " ");
+    if (normalized.length < 2) return;
+    setRecentSearches((current) => [normalized, ...current.filter((item) => item.toLowerCase() !== normalized.toLowerCase())].slice(0, 5));
+  };
 
   const filteredBooks = useMemo(() => books.filter((book) => {
     const text = `${book.title} ${book.author} ${book.subject} ${book.isbn}`.toLowerCase();
@@ -89,6 +100,15 @@ export default function Home() {
   }), [query, author, year, subject]);
   const favoriteBooks = books.filter((book) => isFavorite(book.id));
   const favoriteResources = resources.filter((resource) => isFavorite(resource.id));
+  const recommendedBooks = useMemo(() => {
+    const searches = recentSearches.map((item) => item.toLowerCase());
+    const scored = books.map((book) => {
+      const haystack = `${book.title} ${book.author} ${book.subject}`.toLowerCase();
+      const score = searches.reduce((total, search) => total + (haystack.includes(search) ? 3 : search.split(" ").filter((word) => word.length > 2 && haystack.includes(word)).length), 0);
+      return { book, score };
+    });
+    return scored.sort((a, b) => b.score - a.score || b.book.year - a.book.year).slice(0, 3).map(({ book }) => book);
+  }, [recentSearches]);
 
   const navItems = [
     { id: "catalogo" as const, label: "Catálogo", icon: Library, count: undefined },
@@ -101,8 +121,8 @@ export default function Home() {
 
   return <div className="library-app">
     <header className="app-header"><div className="app-header-inner">
-      <button className="app-brand" onClick={() => setView("catalogo")}><span className="brand-mark"><BookOpen size={21} /></span><span><strong>Biblioteca</strong><em>UMOA</em></span></button>
-      <div className="header-search"><Search size={17} /><input value={query} onChange={(e) => setQuery(e.target.value)} onFocus={() => setView("catalogo")} placeholder="Buscar en el catálogo..." /><kbd>⌘ K</kbd></div>
+      <button className="app-brand" onClick={() => setView("catalogo")}><img className="app-logo" src="/logoumoa.png" alt="Universidad de Moa" /><span><strong>Biblioteca</strong><em>UMOA</em></span></button>
+      <div className="header-search"><Search size={17} /><input value={query} onChange={(e) => setQuery(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") rememberSearch(); }} onFocus={() => setView("catalogo")} placeholder="Buscar en el catálogo..." /><kbd>⌘ K</kbd></div>
       <div className="header-actions"><button className="icon-btn notification-btn" onClick={() => { setView("notificaciones"); setUnread(0); }} aria-label="Notificaciones"><Bell size={18} /><span>{unread}</span></button><button className="icon-btn" onClick={() => setView("favoritos")} aria-label="Favoritos"><Heart size={18} fill={view === "favoritos" ? "currentColor" : "none"} /><span>{favorites.length}</span></button><div className="user-chip"><span className="avatar">U</span><span className="user-name">Usuario visitante</span><ChevronDown size={14} /></div><button className="mobile-menu-btn" onClick={() => setMobileMenu(!mobileMenu)}><Menu size={20} /></button></div>
     </div></header>
     <div className="app-layout">
@@ -111,6 +131,7 @@ export default function Home() {
         {view === "catalogo" && <section>
           <div className="catalog-toolbar"><div className="result-summary"><strong>{filteredBooks.length}</strong> resultados encontrados <span>· Colección física</span></div><button className="filter-toggle" onClick={() => setShowFilters(!showFilters)}><Filter size={15} /> {showFilters ? "Ocultar filtros" : "Mostrar filtros"}</button></div>
           {showFilters && <div className="advanced-filters"><div className="filter-heading"><div><Filter size={16} /><strong>Filtros avanzados</strong></div><button onClick={clearFilters}>Limpiar filtros</button></div><div className="filter-grid"><label>Autor<select value={author} onChange={(e) => setAuthor(e.target.value)}>{authors.map((item) => <option key={item}>{item}</option>)}</select></label><label>Año de publicación<select value={year} onChange={(e) => setYear(e.target.value)}>{years.map((item) => <option key={item}>{item}</option>)}</select></label><label>Materia<select value={subject} onChange={(e) => setSubject(e.target.value)}>{subjects.map((item) => <option key={item}>{item}</option>)}</select></label><label>Tipo de material<select><option>Todos los materiales</option><option>Libro</option><option>Revista</option></select></label></div></div>}
+          {recentSearches.length > 0 && <div className="recommendations-panel"><div className="recommendations-heading"><div><Sparkles size={16} /><strong>Recomendados para ti</strong></div><span>Basado en: {recentSearches[0]}</span></div><div className="recommendation-list">{recommendedBooks.map((book) => <button key={book.id} className="recommendation-item" onClick={() => { setQuery(book.title); setView("catalogo"); }}><BookCover book={book} /><span><strong>{book.title}</strong><small>{book.author}</small></span><ChevronDown size={15} /></button>)}</div></div>}
           {isLoading ? <div className="loading-state"><LoaderCircle size={28} className="spinner" /><strong>Buscando en la colección...</strong><span>Estamos preparando tus resultados</span></div> : <div className="book-results">{filteredBooks.map((book) => <article className="catalog-card" key={book.id}><BookCover book={book} /><div className="catalog-info"><div className="catalog-meta"><span>{book.year}</span><span>ISBN {book.isbn}</span></div><h2>{book.title}</h2><p className="catalog-author">{book.author}</p><p className="catalog-subject">{book.subject}</p><div className="catalog-card-bottom"><button className="detail-btn" onClick={() => setNotice(`Ficha de “${book.title}” seleccionada.`)}>Ver ficha</button><button className={isFavorite(book.id) ? "save-btn saved" : "save-btn"} onClick={() => { toggleFavorite(book.id); setNotice(isFavorite(book.id) ? "Eliminado de favoritos" : "Guardado en favoritos"); }}>{isFavorite(book.id) ? <BookmarkCheck size={16} /> : <Bookmark size={16} />}{isFavorite(book.id) ? "Guardado" : "Guardar"}</button></div></div></article>)}{filteredBooks.length === 0 && <div className="empty-state"><Search size={24} /><strong>No encontramos resultados</strong><span>Prueba con otro autor, año o palabra clave.</span><button className="detail-btn" onClick={clearFilters}>Limpiar búsqueda</button></div>}</div>}
         </section>}
         {view === "recursos" && <section className="resource-page"><div className="resource-page-grid">{resources.map(({ id, title, text, type, icon: Icon, tone }) => <article className={`resource-large ${tone}`} key={id}><span className="resource-large-icon"><Icon size={26} /></span><span className="resource-type">{type}</span><h2>{title}</h2><p>{text}</p><div><button className="detail-btn" onClick={() => setNotice(`Abriendo ${title}...`)}>Acceder →</button><button className={isFavorite(id) ? "save-btn saved" : "save-btn"} onClick={() => { toggleFavorite(id); setNotice(isFavorite(id) ? "Eliminado de favoritos" : "Recurso guardado en favoritos"); }}>{isFavorite(id) ? <BookmarkCheck size={16} /> : <Bookmark size={16} />}</button></div></article>)}</div></section>}
