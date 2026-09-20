@@ -524,3 +524,25 @@ html[data-motion="off"] *, html[data-motion="off"] *::before, html[data-motion="
   .book-detail-content, .resource-detail-card, .preferences-card { padding: 25px; }
   .detail-actions { align-items: flex-start; flex-direction: column; }
 }
+
+/* Requisitos funcionales de biblioteca virtual e información institucional. */
+.virtual-notice { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 22px; padding: 20px; border-left: 2px solid #d44040; background: rgba(22,7,7,.9); color: rgba(255,255,255,.72); }
+.virtual-notice svg { flex: 0 0 auto; color: #d44040; }
+.virtual-notice strong { display: block; margin-bottom: 6px; color: #fff; font-family: var(--font-display); font-size: 18px; }
+.virtual-notice p { max-width: 760px; margin: 0; font-size: 12px; line-height: 1.6; }
+.virtual-search { display: flex; align-items: center; gap: 10px; max-width: 720px; margin-bottom: 24px; padding: 10px 12px; border: 1px solid rgba(255,255,255,.16); background: #100404; }
+.virtual-search svg { color: #d44040; }
+.virtual-search input { min-width: 0; flex: 1; border: 0; outline: 0; background: transparent; color: #fff; font-size: 13px; }
+.university-intro { max-width: 760px; margin-bottom: 28px; padding: 36px; background: linear-gradient(120deg, rgba(23,52,59,.9), rgba(16,4,4,.94)), url('/images/library-campus.webp') center / cover; border: 1px solid rgba(255,255,255,.13); }
+.university-intro h2 { margin: 14px 0; color: #fff; font-family: var(--font-display); font-size: clamp(32px, 5vw, 58px); font-weight: 500; line-height: .98; letter-spacing: -.05em; }
+.university-intro h2 i { color: #e0a08d; font-style: normal; }
+.university-intro p { max-width: 580px; margin: 0; color: rgba(255,255,255,.68); line-height: 1.65; }
+.university-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; max-width: 900px; }
+.university-grid article { min-height: 150px; padding: 20px; border: 1px solid rgba(255,255,255,.12); background: rgba(16,4,4,.9); }
+.university-grid strong { color: #fff; font-family: var(--font-display); font-size: 18px; font-weight: 500; }
+.university-grid p { margin: 10px 0 0; color: rgba(255,255,255,.56); font-size: 12px; line-height: 1.55; }
+.university-grid .service-link { margin-top: 12px; }
+@media (max-width: 780px) { .university-grid { grid-template-columns: 1fr; } .university-intro { padding: 25px; } }
+
+.resource-access-note { margin: 20px 0 0; padding: 12px 14px; border-left: 2px solid #d44040; background: rgba(0,0,0,.2); color: rgba(255,255,255,.64); font-size: 11px; line-height: 1.55; }
+.resource-access-note strong { color: #fff; }

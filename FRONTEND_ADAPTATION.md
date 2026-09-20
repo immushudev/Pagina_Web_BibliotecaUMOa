@@ -39,3 +39,9 @@ El logo institucional también está configurado en el encabezado HTML del sitio
 ## Revisión visual integral
 
 Se revisaron catálogo, recomendaciones, recursos, noticias, formación, preguntas, visita, notificaciones y estados de confirmación. Los formularios y controles que todavía utilizaban superficies claras fueron alineados con el sistema UMOA: fondo oscuro, bordes finos, acento rojo mineral, tipografía Inter para lectura, Space Grotesk para títulos y Oswald para etiquetas técnicas. También se añadieron estados hover/focus visibles y `focus-visible` consistente para teclado.
+
+## Auditoría contra el catálogo de requisitos
+
+Se revisó el documento `Catálogo_Requisitos_BibliotecaUmoa.docx` y se detectó que el índice contiene requisitos heredados de un sistema de ausencias y vacaciones. La versión mejorada se encuentra en `TAREA_TECNICA_MEJORADA.md` y separa el cumplimiento del frontend de las funciones que requieren backend, KOHA, autenticación, auditoría o infraestructura institucional.
+
+En esta revisión se añadieron una vista independiente para Biblioteca virtual, un menú de Nuestra Universidad, los datos bibliográficos de serie, editor, páginas, clasificación CCD e inventario, además de los recursos de Bibliotecas digitales especializadas y Bibliografías recomendadas. Los recursos pendientes muestran explícitamente su estado de integración para evitar presentar como disponible un enlace institucional que aún no ha sido entregado.
