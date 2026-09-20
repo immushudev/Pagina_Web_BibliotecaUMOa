@@ -1,21 +1,118 @@
-import LibraryCatalogue from "@/components/LibraryCatalogue";
-import LibraryCollections from "@/components/LibraryCollections";
-import LibraryFooter from "@/components/LibraryFooter";
-import LibraryHero from "@/components/LibraryHero";
-import LibraryNavbar from "@/components/LibraryNavbar";
-import LibraryNews from "@/components/LibraryNews";
-import LibraryServices from "@/components/LibraryServices";
+import { useEffect, useMemo, useState } from "react";
+import {
+  AlertTriangle, Bell, BookOpen, Bookmark, BookmarkCheck, CalendarDays, CheckCircle2, ChevronDown, Clock3, FileText,
+  Filter, GraduationCap, Grid2X2, Heart, Library, List, LoaderCircle, Mail, MapPin,
+  Menu, Newspaper, Search, Settings2, Sparkles, X,
+} from "lucide-react";
+
+const images = {
+  news: "/manus-storage/noticias_8f4c78e8.webp",
+  campus: "/manus-storage/universidad_1418a2df.webp",
+  halls: "/manus-storage/home_33bc4002.webp",
+};
+
+type Book = { id: string; title: string; author: string; subject: string; year: number; type: string; isbn: string; cover: string };
+type Resource = { id: string; title: string; text: string; type: string; icon: typeof Library; tone: string };
+
+const books: Book[] = [
+  { id: "cien-anos", title: "Cien años de soledad", author: "Gabriel García Márquez", subject: "Narrativa", year: 1967, type: "Libro", isbn: "978-0307474728", cover: "terracotta" },
+  { id: "pedagogia", title: "Pedagogía del oprimido", author: "Paulo Freire", subject: "Educación", year: 1970, type: "Libro", isbn: "978-8571140264", cover: "blue" },
+  { id: "biodiversidad", title: "Introducción a la biodiversidad cubana", author: "R. Estrada · M. Suárez", subject: "Ciencias", year: 2022, type: "Libro", isbn: "978-9590001280", cover: "green" },
+  { id: "historia", title: "Historia de Cuba: La colonia", author: "Eduardo Torres-Cuevas", subject: "Historia", year: 2019, type: "Libro", isbn: "978-9590615592", cover: "gold" },
+  { id: "metodologia", title: "Metodología de la investigación", author: "Roberto Hernández Sampieri", subject: "Investigación", year: 2018, type: "Libro", isbn: "978-1456260871", cover: "blue" },
+  { id: "alfabetizacion", title: "Alfabetización informacional", author: "M. Pinto · P. Sales", subject: "Bibliotecología", year: 2021, type: "Libro", isbn: "978-8491808412", cover: "green" },
+];
+
+const resources: Resource[] = [
+  { id: "ninive", title: "Repositorio Ninive", text: "Producción científica y académica de la UMOA.", type: "Repositorio", icon: Library, tone: "blue" },
+  { id: "revistas", title: "Revistas UMOA", text: "Consulta nuestras tres publicaciones universitarias.", type: "Publicación", icon: Newspaper, tone: "terracotta" },
+  { id: "normas", title: "Normas bibliográficas", text: "Guías prácticas para citar y presentar tus trabajos.", type: "Guía", icon: FileText, tone: "gold" },
+];
+
+const news = [
+  { date: "12 SEP 2026", title: "La biblioteca abre sus puertas a la Semana de la Ciencia", image: images.news },
+  { date: "28 AGO 2026", title: "Nuevos recursos digitales para la investigación", image: images.campus },
+  { date: "04 AGO 2026", title: "Formación de usuarios: aprende a investigar mejor", image: images.halls },
+];
+
+function loadFavorites() {
+  try { return JSON.parse(localStorage.getItem("biblioteca-umoa-favorites") || "[]") as string[]; } catch { return []; }
+}
 
 export default function Home() {
-  return (
-    <main>
-      <LibraryNavbar />
-      <LibraryHero />
-      <LibraryServices />
-      <LibraryCatalogue />
-      <LibraryCollections />
-      <LibraryNews />
-      <LibraryFooter />
-    </main>
-  );
+  const [view, setView] = useState<"catalogo" | "recursos" | "noticias" | "favoritos" | "formacion" | "preguntas" | "visitanos" | "notificaciones" | "confirmacion" | "error">("catalogo");
+  const [query, setQuery] = useState("");
+  const [author, setAuthor] = useState("Todos los autores");
+  const [year, setYear] = useState("Todos los años");
+  const [subject, setSubject] = useState("Todas las materias");
+  const [resourceType, setResourceType] = useState("Todos los recursos");
+  const [showFilters, setShowFilters] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [favorites, setFavorites] = useState<string[]>(loadFavorites);
+  const [mobileMenu, setMobileMenu] = useState(false);
+  const [selectedNews, setSelectedNews] = useState<(typeof news)[number] | null>(null);
+  const [notice, setNotice] = useState("");
+  const [unread, setUnread] = useState(3);
+
+  useEffect(() => { localStorage.setItem("biblioteca-umoa-favorites", JSON.stringify(favorites)); }, [favorites]);
+  useEffect(() => {
+    setIsLoading(true);
+    const timer = window.setTimeout(() => setIsLoading(false), 520);
+    return () => window.clearTimeout(timer);
+  }, [query, author, year, subject]);
+  useEffect(() => { if (!notice) return; const timer = window.setTimeout(() => setNotice(""), 2800); return () => window.clearTimeout(timer); }, [notice]);
+
+  const authors = ["Todos los autores", ...Array.from(new Set(books.map((book) => book.author)))];
+  const years = ["Todos los años", ...Array.from(new Set(books.map((book) => String(book.year))).values()).sort((a, b) => Number(b) - Number(a))];
+  const subjects = ["Todas las materias", ...Array.from(new Set(books.map((book) => book.subject)))];
+  const toggleFavorite = (id: string) => setFavorites((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
+  const isFavorite = (id: string) => favorites.includes(id);
+  const clearFilters = () => { setQuery(""); setAuthor("Todos los autores"); setYear("Todos los años"); setSubject("Todas las materias"); };
+
+  const filteredBooks = useMemo(() => books.filter((book) => {
+    const text = `${book.title} ${book.author} ${book.subject} ${book.isbn}`.toLowerCase();
+    return (!query || text.includes(query.toLowerCase())) && (author === "Todos los autores" || book.author === author) && (year === "Todos los años" || book.year === Number(year)) && (subject === "Todas las materias" || book.subject === subject);
+  }), [query, author, year, subject]);
+  const favoriteBooks = books.filter((book) => isFavorite(book.id));
+  const favoriteResources = resources.filter((resource) => isFavorite(resource.id));
+
+  const navItems = [
+    { id: "catalogo" as const, label: "Catálogo", icon: Library, count: undefined },
+    { id: "recursos" as const, label: "Recursos digitales", icon: FileText, count: undefined },
+    { id: "noticias" as const, label: "Noticias", icon: Newspaper, count: undefined },
+    { id: "favoritos" as const, label: "Mis favoritos", icon: Heart, count: favorites.length || undefined },
+  ];
+  const pageTitle = view === "catalogo" ? "Catálogo bibliográfico" : view === "recursos" ? "Recursos digitales" : view === "noticias" ? "Noticias de la biblioteca" : view === "favoritos" ? "Mis favoritos" : view === "formacion" ? "Formación de usuarios" : view === "preguntas" ? "Pregúntanos" : view === "visitanos" ? "Visítanos" : view === "notificaciones" ? "Centro de notificaciones" : view === "confirmacion" ? "Solicitud confirmada" : "Ha ocurrido un error";
+  const pageIntro = view === "catalogo" ? "Busca libros, autores y temas en la colección física de la Biblioteca UMOA." : view === "recursos" ? "Accede a repositorios, revistas y guías para tus trabajos académicos." : view === "noticias" ? "Mantente al día con las actividades y novedades de nuestra comunidad." : view === "favoritos" ? "Guarda aquí los libros y recursos que quieres consultar más tarde." : view === "formacion" ? "Aprende a investigar, citar y aprovechar mejor los recursos de la biblioteca." : view === "preguntas" ? "Estamos aquí para orientarte en tus búsquedas y necesidades académicas." : view === "visitanos" ? "Encuentra la información necesaria para planificar tu visita." : view === "notificaciones" ? "Revisa las novedades y avisos importantes de la Biblioteca UMOA." : view === "confirmacion" ? "Tu solicitud se registró correctamente en el sistema." : "No pudimos completar esta acción, pero puedes intentarlo de nuevo.";
+
+  return <div className="library-app">
+    <header className="app-header"><div className="app-header-inner">
+      <button className="app-brand" onClick={() => setView("catalogo")}><span className="brand-mark"><BookOpen size={21} /></span><span><strong>Biblioteca</strong><em>UMOA</em></span></button>
+      <div className="header-search"><Search size={17} /><input value={query} onChange={(e) => setQuery(e.target.value)} onFocus={() => setView("catalogo")} placeholder="Buscar en el catálogo..." /><kbd>⌘ K</kbd></div>
+      <div className="header-actions"><button className="icon-btn notification-btn" onClick={() => { setView("notificaciones"); setUnread(0); }} aria-label="Notificaciones"><Bell size={18} /><span>{unread}</span></button><button className="icon-btn" onClick={() => setView("favoritos")} aria-label="Favoritos"><Heart size={18} fill={view === "favoritos" ? "currentColor" : "none"} /><span>{favorites.length}</span></button><div className="user-chip"><span className="avatar">U</span><span className="user-name">Usuario visitante</span><ChevronDown size={14} /></div><button className="mobile-menu-btn" onClick={() => setMobileMenu(!mobileMenu)}><Menu size={20} /></button></div>
+    </div></header>
+    <div className="app-layout">
+      <aside className={mobileMenu ? "app-sidebar mobile-open" : "app-sidebar"}><div className="sidebar-section"><span className="sidebar-label">EXPLORAR</span>{navItems.map(({ id, label, icon: Icon, count }) => <button className={view === id ? "sidebar-link active" : "sidebar-link"} onClick={() => { setView(id); setMobileMenu(false); }} key={id}><Icon size={17} />{label}{count && <span className="sidebar-count">{count}</span>}</button>)}</div><div className="sidebar-section"><span className="sidebar-label">SERVICIOS</span><button className={view === "formacion" ? "sidebar-link active" : "sidebar-link"} onClick={() => { setView("formacion"); setMobileMenu(false); }}><GraduationCap size={17} />Formación de usuarios</button><button className={view === "preguntas" ? "sidebar-link active" : "sidebar-link"} onClick={() => { setView("preguntas"); setMobileMenu(false); }}><Mail size={17} />Pregúntanos</button><button className={view === "visitanos" ? "sidebar-link active" : "sidebar-link"} onClick={() => { setView("visitanos"); setMobileMenu(false); }}><MapPin size={17} />Visítanos</button></div><div className="sidebar-bottom"><div className="sidebar-help"><Sparkles size={18} /><div><strong>¿Necesitas ayuda?</strong><span>Pregúntale al bibliotecario</span></div><span>→</span></div><small>UNIVERSIDAD DE MOA · DR. ANTONIO NÚÑEZ JIMÉNEZ</small></div></aside>
+      <main className="app-main"><div className="page-topbar"><div><div className="breadcrumbs">Biblioteca UMOA <span>/</span> {pageTitle}</div><h1>{pageTitle}</h1><p>{pageIntro}</p></div><div className="view-actions"><button className="outline-btn"><Settings2 size={15} /> Preferencias</button><button className="outline-btn square"><Grid2X2 size={16} /><List size={16} /></button></div></div>
+        {view === "catalogo" && <section>
+          <div className="catalog-toolbar"><div className="result-summary"><strong>{filteredBooks.length}</strong> resultados encontrados <span>· Colección física</span></div><button className="filter-toggle" onClick={() => setShowFilters(!showFilters)}><Filter size={15} /> {showFilters ? "Ocultar filtros" : "Mostrar filtros"}</button></div>
+          {showFilters && <div className="advanced-filters"><div className="filter-heading"><div><Filter size={16} /><strong>Filtros avanzados</strong></div><button onClick={clearFilters}>Limpiar filtros</button></div><div className="filter-grid"><label>Autor<select value={author} onChange={(e) => setAuthor(e.target.value)}>{authors.map((item) => <option key={item}>{item}</option>)}</select></label><label>Año de publicación<select value={year} onChange={(e) => setYear(e.target.value)}>{years.map((item) => <option key={item}>{item}</option>)}</select></label><label>Materia<select value={subject} onChange={(e) => setSubject(e.target.value)}>{subjects.map((item) => <option key={item}>{item}</option>)}</select></label><label>Tipo de material<select><option>Todos los materiales</option><option>Libro</option><option>Revista</option></select></label></div></div>}
+          {isLoading ? <div className="loading-state"><LoaderCircle size={28} className="spinner" /><strong>Buscando en la colección...</strong><span>Estamos preparando tus resultados</span></div> : <div className="book-results">{filteredBooks.map((book) => <article className="catalog-card" key={book.id}><div className={`catalog-cover ${book.cover}`}><span className="cover-type">{book.type}</span><BookOpen size={30} /><small>{book.subject}</small></div><div className="catalog-info"><div className="catalog-meta"><span>{book.year}</span><span>ISBN {book.isbn}</span></div><h2>{book.title}</h2><p className="catalog-author">{book.author}</p><p className="catalog-subject">{book.subject}</p><div className="catalog-card-bottom"><button className="detail-btn" onClick={() => setNotice(`Ficha de “${book.title}” seleccionada.`)}>Ver ficha</button><button className={isFavorite(book.id) ? "save-btn saved" : "save-btn"} onClick={() => { toggleFavorite(book.id); setNotice(isFavorite(book.id) ? "Eliminado de favoritos" : "Guardado en favoritos"); }}>{isFavorite(book.id) ? <BookmarkCheck size={16} /> : <Bookmark size={16} />}{isFavorite(book.id) ? "Guardado" : "Guardar"}</button></div></div></article>)}{filteredBooks.length === 0 && <div className="empty-state"><Search size={24} /><strong>No encontramos resultados</strong><span>Prueba con otro autor, año o palabra clave.</span><button className="detail-btn" onClick={clearFilters}>Limpiar búsqueda</button></div>}</div>}
+        </section>}
+        {view === "recursos" && <section className="resource-page"><div className="resource-page-grid">{resources.map(({ id, title, text, type, icon: Icon, tone }) => <article className={`resource-large ${tone}`} key={id}><span className="resource-large-icon"><Icon size={26} /></span><span className="resource-type">{type}</span><h2>{title}</h2><p>{text}</p><div><button className="detail-btn" onClick={() => setNotice(`Abriendo ${title}...`)}>Acceder →</button><button className={isFavorite(id) ? "save-btn saved" : "save-btn"} onClick={() => { toggleFavorite(id); setNotice(isFavorite(id) ? "Eliminado de favoritos" : "Recurso guardado en favoritos"); }}>{isFavorite(id) ? <BookmarkCheck size={16} /> : <Bookmark size={16} />}</button></div></article>)}</div></section>}
+        {view === "noticias" && <section className="news-page"><div className="news-list">{news.map((item) => <button className="news-list-card" key={item.title} onClick={() => setSelectedNews(item)}><div className="news-list-image" style={{ backgroundImage: `url(${item.image})` }} /><div><span className="news-date"><CalendarDays size={13} /> {item.date}</span><h2>{item.title}</h2><p>Conoce las novedades, actividades y oportunidades de la Biblioteca UMOA para toda la comunidad universitaria.</p><span className="read-more">Leer noticia →</span></div></button>)}</div></section>}
+        {view === "favoritos" && <section className="favorites-page"><div className="favorites-stats"><div><Heart size={20} /><strong>{favorites.length}</strong><span>elementos guardados</span></div><p>Tu lista se conserva automáticamente en este navegador.</p></div>{favoriteBooks.length === 0 && favoriteResources.length === 0 ? <div className="empty-state favorite-empty"><Bookmark size={26} /><strong>Aún no tienes favoritos</strong><span>Guarda libros y recursos desde sus tarjetas para encontrarlos fácilmente aquí.</span><button className="detail-btn" onClick={() => setView("catalogo")}>Explorar catálogo</button></div> : <><h2 className="subsection-title">Libros guardados</h2><div className="book-results">{favoriteBooks.map((book) => <article className="catalog-card" key={book.id}><div className={`catalog-cover ${book.cover}`}><span className="cover-type">{book.type}</span><BookOpen size={30} /><small>{book.subject}</small></div><div className="catalog-info"><div className="catalog-meta"><span>{book.year}</span><span>ISBN {book.isbn}</span></div><h2>{book.title}</h2><p className="catalog-author">{book.author}</p><div className="catalog-card-bottom"><button className="save-btn saved" onClick={() => { toggleFavorite(book.id); setNotice("Eliminado de favoritos"); }}><BookmarkCheck size={16} /> Guardado</button></div></div></article>)}</div>{favoriteResources.length > 0 && <><h2 className="subsection-title">Recursos guardados</h2><div className="resource-page-grid">{favoriteResources.map(({ id, title, text, type, icon: Icon, tone }) => <article className={`resource-large ${tone}`} key={id}><span className="resource-large-icon"><Icon size={26} /></span><span className="resource-type">{type}</span><h2>{title}</h2><p>{text}</p><button className="save-btn saved" onClick={() => { toggleFavorite(id); setNotice("Eliminado de favoritos"); }}><BookmarkCheck size={16} /> Guardado</button></article>)}</div></>}</>}</section>}
+
+        {view === "formacion" && <section className="service-page"><div className="service-hero training-service"><div className="service-hero-icon"><GraduationCap size={30} /></div><div><span className="service-kicker">SERVICIO AL USUARIO · 01</span><h2>Aprende a investigar<br /><i>con confianza.</i></h2><p>Te acompañamos para que encuentres, evalúes y uses la información de forma clara, ética y eficiente.</p></div></div><div className="service-content-grid"><div><h3>Programas de formación</h3><p className="service-muted">Elige el formato que mejor se adapte a tu momento académico.</p><div className="service-cards"><article className="service-card"><span>01</span><h4>Inducción a la biblioteca</h4><p>Conoce nuestras salas, servicios, colecciones y formas de acceso.</p><button className="service-link" onClick={() => setNotice("Solicitud de inducción registrada.")}>Solicitar inducción →</button></article><article className="service-card"><span>02</span><h4>Taller de búsqueda</h4><p>Aprende a construir estrategias para encontrar información confiable.</p><button className="service-link" onClick={() => setNotice("Próximo taller: jueves, 10:00 AM.")}>Ver próximos talleres →</button></article><article className="service-card"><span>03</span><h4>Normas bibliográficas</h4><p>Resuelve tus dudas sobre citas, referencias y presentación académica.</p><button className="service-link" onClick={() => { setView("recursos"); }}>Consultar guía →</button></article></div></div><aside className="service-aside"><Clock3 size={20} /><strong>Horario de atención</strong><p>Lunes a viernes<br />8:00 AM — 5:00 PM</p><span>Las sesiones pueden coordinarse para grupos de estudiantes y docentes.</span></aside></div></section>}
+        {view === "preguntas" && <section className="service-page"><div className="service-hero ask-service"><div className="service-hero-icon"><Mail size={30} /></div><div><span className="service-kicker">SERVICIO AL USUARIO · 02</span><h2>Tu pregunta<br /><i>abre una puerta.</i></h2><p>Escríbenos y recibe orientación sobre búsquedas, préstamos, recursos digitales y servicios de la biblioteca.</p></div></div><div className="ask-layout"><div className="ask-form-card"><div className="form-card-heading"><span>ENVIAR CONSULTA</span><strong>¿En qué podemos ayudarte?</strong></div><form onSubmit={(event) => { event.preventDefault(); setView("confirmacion"); }}><label>Nombre<input required placeholder="Escribe tu nombre" /></label><label>Correo institucional<input required type="email" placeholder="nombre@umoa.edu.cu" /></label><label>Motivo<select defaultValue=""><option value="" disabled>Selecciona una opción</option><option>Ayuda con una búsqueda</option><option>Préstamo o renovación</option><option>Recursos digitales</option><option>Otro</option></select></label><label>Mensaje<textarea required rows={4} placeholder="Cuéntanos qué necesitas..."></textarea></label><button className="button button-dark" type="submit">Enviar consulta <Mail size={16} /></button></form></div><div className="answer-panel"><span className="service-kicker">TAMBIÉN PUEDES</span><h3>Encontrar respuestas<br />por tu cuenta.</h3><div className="answer-row"><span>01</span><div><strong>Revisar preguntas frecuentes</strong><p>Respuestas rápidas sobre nuestros servicios.</p></div></div><div className="answer-row"><span>02</span><div><strong>Escribir por correo</strong><p>biblioteca@umoa.edu.cu</p></div></div><div className="answer-row"><span>03</span><div><strong>Visitar el mostrador</strong><p>Estamos en la sede central de la UMOA.</p></div></div></div></div></section>}
+        {view === "visitanos" && <section className="service-page"><div className="service-hero visit-service"><div className="service-hero-icon"><MapPin size={30} /></div><div><span className="service-kicker">SERVICIO AL USUARIO · 03</span><h2>Ven a encontrar<br /><i>tu espacio.</i></h2><p>Un lugar tranquilo para leer, estudiar, reunirte y descubrir nuevas ideas dentro de la Universidad de Moa.</p></div></div><div className="visit-layout"><div className="visit-photo" style={{ backgroundImage: "url(" + images.campus + ")" }}><span>Biblioteca UMOA</span></div><div className="visit-details"><div className="detail-block"><MapPin size={19} /><div><span className="detail-label">LOCALIZACIÓN</span><strong>Campus central de la UMOA</strong><p>Carretera a Jagüey Grande, km 5<br />Moa, Holguín, Cuba</p></div></div><div className="detail-block"><Clock3 size={19} /><div><span className="detail-label">HORARIO</span><strong>Lunes a viernes</strong><p>8:00 AM — 5:00 PM<br />Sala de lectura · 8:00 AM — 4:30 PM</p></div></div><div className="detail-block"><BookOpen size={19} /><div><span className="detail-label">AL LLEGAR</span><strong>Pregunta en el mostrador</strong><p>Nuestro equipo te orientará para encontrar la sala o colección que necesitas.</p></div></div><button className="button button-dark" onClick={() => setView("confirmacion")}>Preparar mi visita →</button></div></div></section>}
+
+        {view === "notificaciones" && <section className="notifications-page"><div className="notification-toolbar"><div><strong>{unread === 0 ? "Todo al día" : unread + " novedades"}</strong><span>Actualizaciones recientes de la biblioteca</span></div><button className="outline-btn" onClick={() => setUnread(0)}>Marcar todo como leído</button></div><div className="notification-list"><article className="notification-item unread"><span className="notification-icon terracotta-icon"><Bell size={17} /></span><div><span className="notification-time">HOY · 09:20 AM</span><strong>Nuevos recursos disponibles</strong><p>Ya puedes consultar las nuevas guías de investigación en Recursos digitales.</p></div><span className="unread-dot" /></article><article className="notification-item unread"><span className="notification-icon blue-icon"><CalendarDays size={17} /></span><div><span className="notification-time">AYER · 04:10 PM</span><strong>Próximo taller de búsqueda</strong><p>Reserva tu plaza para el taller del jueves a las 10:00 AM.</p></div><span className="unread-dot" /></article><article className="notification-item"><span className="notification-icon green-icon"><Heart size={17} /></span><div><span className="notification-time">18 SEP 2026</span><strong>Favoritos sincronizados</strong><p>Tus libros guardados están disponibles en este navegador.</p></div></article></div></section>}
+        {view === "confirmacion" && <section className="feedback-page confirmation-page"><div className="feedback-symbol"><CheckCircle2 size={39} /></div><span className="service-kicker">OPERACIÓN COMPLETADA</span><h2>Gracias por confiar<br /><i>en la biblioteca.</i></h2><p>Hemos recibido tu solicitud. Nuestro equipo revisará la información y te responderá dentro del horario de atención.</p><div className="feedback-reference"><span>REFERENCIA</span><strong>UMOA-{new Date().getFullYear()}-0428</strong></div><div className="feedback-actions"><button className="button button-dark" onClick={() => setView("catalogo")}>Volver al catálogo</button><button className="not-found-back" onClick={() => setView("notificaciones")}>Ver notificaciones →</button></div></section>}
+        {view === "error" && <section className="feedback-page error-page"><div className="feedback-symbol error-symbol"><AlertTriangle size={39} /></div><span className="service-kicker">NO SE PUDO COMPLETAR</span><h2>Algo se cruzó<br /><i>en el camino.</i></h2><p>La acción no pudo completarse en este momento. Revisa los datos e inténtalo de nuevo.</p><div className="feedback-actions"><button className="button button-dark" onClick={() => setView("catalogo")}>Intentar de nuevo</button><button className="not-found-back" onClick={() => setView("preguntas")}>Pedir ayuda →</button></div></section>}
+      </main>
+    </div>
+    {selectedNews && <div className="modal-backdrop" onClick={() => setSelectedNews(null)}><article className="news-modal" onClick={(e) => e.stopPropagation()}><button className="modal-close" onClick={() => setSelectedNews(null)}><X size={18} /></button><div className="modal-image" style={{ backgroundImage: `url(${selectedNews.image})` }} /><div className="modal-content"><span className="news-date">{selectedNews.date}</span><h2>{selectedNews.title}</h2><p>Esta noticia forma parte de la agenda de actividades y novedades de la Biblioteca UMOA para mantener informada a toda nuestra comunidad.</p><button className="button button-dark" onClick={() => setSelectedNews(null)}>Cerrar noticia</button></div></article></div>}
+    {notice && <div className="toast"><span>✓</span>{notice}<button onClick={() => setNotice("")}><X size={14} /></button></div>}
+  </div>;
 }
