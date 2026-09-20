@@ -464,3 +464,63 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   font-weight: 500;
   letter-spacing: -.04em;
 }
+
+/* Flujos completos: fichas, preferencias, vista lista y animaciones del sistema. */
+.app-main > * { animation: page-enter .38s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes page-enter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+html[data-motion="off"] *, html[data-motion="off"] *::before, html[data-motion="off"] *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+.book-results.list-view { display: flex; flex-direction: column; gap: 10px; }
+.book-results.list-view .catalog-card { min-height: 145px; }
+.book-results.list-view .catalog-cover { width: 88px; flex-basis: 88px; }
+.book-results.list-view .catalog-info { padding: 14px 17px; }
+.library-app.compact-mode .app-main { padding-top: 30px; padding-bottom: 45px; }
+.library-app.compact-mode .catalog-card { min-height: 175px; }
+.library-app.compact-mode .advanced-filters { margin-bottom: 14px; padding-top: 12px; padding-bottom: 13px; }
+.library-app.compact-mode .book-results { gap: 9px; }
+.resource-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 18px; color: rgba(255,255,255,.52); font-size: 11px; }
+.resource-filter-label { display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,.75); font-family: var(--font-label); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+.resource-filter-label svg { color: #d44040; }
+.resource-filter-label select { margin-left: 4px; min-width: 170px; padding: 9px 11px; border: 1px solid rgba(255,255,255,.18); outline: none; background: #150606; color: #fff; font: inherit; text-transform: none; letter-spacing: normal; }
+.resource-filter-label option { background: #100404; }
+.detail-page { max-width: 920px; }
+.back-link { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 22px; padding: 0; background: transparent; color: #d44040; font-family: var(--font-label); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+.back-link:hover { color: #fff; }
+.book-detail-card { display: grid; grid-template-columns: 240px 1fr; min-height: 430px; background: rgba(16,4,4,.92); border: 1px solid rgba(255,255,255,.14); overflow: hidden; }
+.book-detail-card > .catalog-cover { width: 240px; height: 100%; min-height: 430px; }
+.book-detail-content { display: flex; flex-direction: column; padding: 42px; }
+.book-detail-content h2, .resource-detail-card h2 { margin: 15px 0 8px; color: #fff; font-family: var(--font-display); font-size: clamp(32px, 4vw, 52px); font-weight: 500; letter-spacing: -.05em; line-height: .98; }
+.detail-author { margin: 0; color: #e0a08d; font-size: 15px; }
+.detail-description { max-width: 590px; margin: 22px 0 0; color: rgba(255,255,255,.6); font-size: 13px; line-height: 1.75; }
+.detail-facts { display: flex; flex-wrap: wrap; gap: 0; margin: 28px 0; border-top: 1px solid rgba(255,255,255,.13); border-bottom: 1px solid rgba(255,255,255,.13); }
+.detail-facts span { display: flex; min-width: 115px; flex-direction: column; gap: 6px; padding: 14px 20px 14px 0; }
+.detail-facts small { color: rgba(255,255,255,.4); font-family: var(--font-label); font-size: 9px; letter-spacing: .12em; }
+.detail-facts strong { color: #fff; font-size: 12px; font-weight: 500; }
+.detail-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 18px; margin-top: auto; }
+.resource-detail-card { max-width: 760px; min-height: 420px; padding: 48px; border: 1px solid rgba(255,255,255,.14); background-position: center; background-size: cover; }
+.resource-detail-card.blue { background: linear-gradient(rgba(23,52,59,.88), rgba(10,16,18,.96)), url('/images/library-campus.webp'); }
+.resource-detail-card.terracotta { background: linear-gradient(rgba(94,32,26,.88), rgba(20,4,4,.96)), url('/images/library-news.webp'); }
+.resource-detail-card.gold { background: linear-gradient(rgba(90,74,29,.88), rgba(20,12,4,.96)), url('/images/library-collections.webp'); }
+.resource-detail-card .resource-large-icon { margin-bottom: 26px; color: #fff; border-radius: 0; }
+.resource-detail-card .detail-description { max-width: 580px; }
+.preferences-page { max-width: 720px; }
+.preferences-card { padding: 34px; background: rgba(16,4,4,.92); border: 1px solid rgba(255,255,255,.14); }
+.preferences-card .detail-description { margin-bottom: 28px; }
+.preference-toggle { display: flex; align-items: center; justify-content: space-between; gap: 22px; padding: 20px 0; border-top: 1px solid rgba(255,255,255,.13); cursor: pointer; }
+.preference-toggle > span { display: flex; flex-direction: column; gap: 6px; }
+.preference-toggle strong { color: #fff; font-family: var(--font-display); font-size: 15px; font-weight: 500; }
+.preference-toggle small { color: rgba(255,255,255,.5); font-size: 11px; line-height: 1.45; }
+.preference-toggle input { position: absolute; opacity: 0; pointer-events: none; }
+.preference-toggle i { position: relative; width: 42px; height: 22px; flex: 0 0 42px; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.22); transition: background .2s; }
+.preference-toggle i::after { position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; content: ''; background: rgba(255,255,255,.75); transition: transform .2s, background .2s; }
+.preference-toggle input:checked + i { background: #c0392b; border-color: #d44040; }
+.preference-toggle input:checked + i::after { background: #fff; transform: translateX(19px); }
+.preferences-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 18px; padding-top: 24px; }
+@media (max-width: 680px) {
+  .resource-toolbar { align-items: flex-start; flex-direction: column; }
+  .resource-filter-label { align-items: flex-start; flex-direction: column; }
+  .resource-filter-label select { margin-left: 0; width: min(100%, 280px); }
+  .book-detail-card { display: block; }
+  .book-detail-card > .catalog-cover { width: 100%; height: 260px; min-height: 260px; }
+  .book-detail-content, .resource-detail-card, .preferences-card { padding: 25px; }
+  .detail-actions { align-items: flex-start; flex-direction: column; }
+}
